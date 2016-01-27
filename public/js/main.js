@@ -264,8 +264,9 @@ $(document).ready(function() {
             ]
         }
     ]);
-    var marker;
+    var markers = new app.model.CustomMarkerList();
 
+    // User
     var user = new app.model.User();
     if (!user.getLogged()) {
         user.setAlias("Anonymous");
@@ -283,7 +284,7 @@ $(document).ready(function() {
         oAuth();
     });
 
-    // OAuth.io
+    // OAuth
     function oAuth() {
         OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
 
@@ -299,7 +300,8 @@ $(document).ready(function() {
             user.setAlias(me.alias);
             user.setAvatar(me.raw.profile_image_url);
 
-            marker = new app.model.CustomMarker(new google.maps.LatLng(-17.9546781,120.852662), map, {marker_id: '1234'});
+            var marker = new app.model.CustomMarker(new google.maps.LatLng(-17.9546781,120.852662), map, {marker_id: '1234'});
+            markers.addMarker(marker);
 
             console.log(user);
         }).fail(function(err) {
