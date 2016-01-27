@@ -1,52 +1,6 @@
 "use strict";
 
-var app = {};
-app.model = {};
-app.model.User = (function() {
-
-    var User = function() {
-        this.isLogged = false;
-        this.alias = "";
-        this.avatar = "";
-        this.location = {};
-    };
-
-    User.prototype.setLocation = function(location) {
-        this.location = location;
-    };
-
-    User.prototype.getLocation = function() {
-        return this.location;
-    };
-
-    User.prototype.setLogged = function(logged) {
-        this.isLogged = logged;
-    };
-
-    User.prototype.getLogged = function() {
-        return this.isLogged;
-    };
-
-    User.prototype.setAlias = function(alias) {
-        this.alias = alias;
-    };
-
-    User.prototype.getAlias = function() {
-        return this.alias;
-    };
-
-    User.prototype.setAvatar = function(avatarUrl) {
-        this.avatar = avatarUrl;
-    };
-
-    User.prototype.getAvatar = function() {
-        return this.avatar;
-    };
-
-    return User;
-
-})();
-app.model.CustomMarkerList = (function() {
+var CustomMarkerList = (function() {
 
     var CustomMarkerList = function() {
         this.list = [];
@@ -59,89 +13,30 @@ app.model.CustomMarkerList = (function() {
     return CustomMarkerList;
 
 })();
-app.model.CustomMarker = (function() {
-
-    function CustomMarker(latlng, map, args) {
-        this.latlng = latlng;
-        this.args = args;
-        this.setMap(map);
-    }
-
-    CustomMarker.prototype = new google.maps.OverlayView();
-
-    CustomMarker.prototype.draw = function() {
-
-        var self = this;
-
-        var div = this.div;
-
-        if (!div) {
-
-            // Create marker container
-            div = this.div = document.createElement('div');
-
-            // Create marker elements
-            var span = document.createElement("SPAN");
-            this.div.appendChild(span);
-            this.div.appendChild(span);
-            this.div.appendChild(span);
-
-            div.className = 'marker';
-
-            div.style.cursor = 'pointer';
-
-            if (typeof(self.args.marker_id) !== 'undefined') {
-                div.dataset.marker_id = self.args.marker_id;
-            }
-
-            google.maps.event.addDomListener(div, "click", function(event) {
-                alert('You clicked on a custom marker!');
-                google.maps.event.trigger(self, "click");
-            });
-
-            var panes = this.getPanes();
-            panes.overlayImage.appendChild(div);
-        }
-
-        var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
-
-        if (point) {
-            div.style.left = (point.x - 10) + 'px';
-            div.style.top = (point.y - 20) + 'px';
-        }
-    };
-
-    CustomMarker.prototype.remove = function() {
-        if (this.div) {
-            this.div.parentNode.removeChild(this.div);
-            this.div = null;
-        }
-    };
-
-    CustomMarker.prototype.getPosition = function() {
-        return this.latlng;
-    };
-
-    return CustomMarker;
-
-})();
 
 $(document).ready(function() {
 
     // Map
-    var myLatlng = new google.maps.LatLng(33.1928653,-5.6143691,3);
+    var center = new google.maps.LatLng(30.1928653,-5.6143691,3);
     var mapOptions = {
+        scrollwheel: false,
+        navigationControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        draggable: false,
         zoom: 3,
-        center: myLatlng,
+        center: center,
         disableDefaultUI: true
     };
     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    google.maps.event.trigger(map, "resize");
     map.set('styles', [
         {
             "featureType": "all",
             "elementType": "labels.text.fill",
             "stylers": [
+                {
+                    "visibility": "off"
+                },
                 {
                     "color": "#ffffff"
                 }
@@ -152,7 +47,7 @@ $(document).ready(function() {
             "elementType": "labels.text.stroke",
             "stylers": [
                 {
-                    "visibility": "on"
+                    "visibility": "off"
                 },
                 {
                     "color": "#3e606f"
@@ -203,7 +98,7 @@ $(document).ready(function() {
             "elementType": "labels.text",
             "stylers": [
                 {
-                    "visibility": "simplified"
+                    "visibility": "off"
                 }
             ]
         },
@@ -265,10 +160,10 @@ $(document).ready(function() {
             ]
         }
     ]);
-    var markers = new app.model.CustomMarkerList();
+    var markers = new CustomMarkerList();
 
     // User
-    var user = new app.model.User();
+    var user = new User();
     if (!user.getLogged()) {
         user.setAlias("Anonymous");
         user.setLocation({});
@@ -304,14 +199,17 @@ $(document).ready(function() {
             user.setAvatar(me.raw.profile_image_url);
 
             getLocation(function(position) {
-                console.log(position);
-                var coordinates = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                user.setLocation(coordinates);
-                marker = new app.model.CustomMarker(new google.maps.LatLng(user.getLocation().latitude, user.getLocation().longitude),
-                    map, { marker_id: '1234' });
+                user.setLocation({
+                    latitude: position.coords.latitude || "",
+                    longitude: position.coords.longitude || ""
+                });
+
+                // make new marker
+                var coords = user.getLocation();
+                var lat = coords.latitude;
+                var lng = coords.longitude;
+
+                marker = new CustomMarker(new google.maps.LatLng(lat, lng), map, { marker_id: '1234' });
                 markers.addMarker(marker);
             });
 
@@ -329,5 +227,13 @@ $(document).ready(function() {
             console.log("Geolocation is not supported by this browser.");
         }
     }
+
+    // Events
+    $("#chat-input").keypress(function(e) {
+        if (e.which == 13) {
+            console.log( $(this).val() );
+            $(this).val("");
+        }
+    });
 
 });
