@@ -1,0 +1,21 @@
+{
+  "name": "tweet-chat",
+  "description": "",
+  "main": "Gruntfile.js",
+  "authors": [
+    "juan.moreno@moelia.com <juan.moreno@moelia.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/termosfera/tweet-chat",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "oauth-js": "oauth.io#^0.5.0"
+  }
+}

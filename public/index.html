@@ -1,20 +1,56 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <title>Google Maps API</title>
-    <link rel="stylesheet" href="styles/css/main.css">
-</head>
-<body>
+    <head>
+        <title>Tweet-chat</title>
+        <link rel="stylesheet" href="styles/css/main.css">
+        <!-- Oauth.io -->
+        <script src="bower_components/oauth-js/dist/oauth.js"></script>
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </head>
+    <body>
 
-<div class="wrapper">
-    <div id="map"></div>
-    <div id="chat"></div>
-</div>
+        <!-- Content -->
+        <div class="wrapper">
+            <div id="map"></div>
+            <div id="chat"></div>
+        </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <script type="text/javascript" src="js/CustomGoogleMapMarker.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-</body>
+        <!-- Modal -->
+        <div id="loginModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Log in, if you want...</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p>
+                                    You can login with your twitter account or enter as anonymous
+                                </p>
+                            </div>
+                            <div class="col-md-8">
+                                <button id="twitter-login-button"  type="button" class="btn btn-default btn-lg" ng-click="login.connect()">
+                                    <img src="img/twitter.png" alt="twitter-logo" data-dismiss="modal"/>
+                                    Login with your Twitter account
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+    </body>
 </html>
