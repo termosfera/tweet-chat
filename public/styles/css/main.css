@@ -10,7 +10,7 @@ body {
   position: relative;
 }
 .wrapper #map {
-  height: 110%;
+  height: 100%;
 }
 .wrapper #chat {
   width: 600px;
@@ -27,6 +27,7 @@ body {
   padding: 3%;
   background-color: rgba(0, 0, 0, 0.5);
   color: whitesmoke;
+  word-wrap: break-word;
 }
 .wrapper #chat-form {
   width: 100%;

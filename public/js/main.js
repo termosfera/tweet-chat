@@ -1,12 +1,12 @@
 "use strict";
 
-var CustomMarkerList = (function() {
+var CustomMarkerList = (function () {
 
-    var CustomMarkerList = function() {
+    var CustomMarkerList = function () {
         this.list = [];
     };
 
-    CustomMarkerList.prototype.addMarker = function(marker) {
+    CustomMarkerList.prototype.addMarker = function (marker) {
         this.list.push(marker);
     };
 
@@ -14,10 +14,10 @@ var CustomMarkerList = (function() {
 
 })();
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     // Map
-    var center = new google.maps.LatLng(30.1928653,-5.6143691,3);
+    var center = new google.maps.LatLng(30.1928653, -5.6143691, 3);
     var mapOptions = {
         scrollwheel: false,
         navigationControl: false,
@@ -175,7 +175,7 @@ $(document).ready(function() {
 
     $modal.modal('show');
 
-    $twitterButton.on('click', function() {
+    $twitterButton.on('click', function () {
         $modal.modal('hide');
         oAuth();
     });
@@ -184,21 +184,21 @@ $(document).ready(function() {
     function oAuth() {
         OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
 
-        OAuth.popup('twitter', {cache: true}).done(function(twitter) {
+        OAuth.popup('twitter', {cache: true}).done(function (twitter) {
             // handle correct popup execution
-        }).fail(function(err) {
+        }).fail(function (err) {
             // handle popup error
         });
 
         var twitter = OAuth.create('twitter');
 
-        twitter.me().done(function(me) {
+        twitter.me().done(function (me) {
             var marker;
 
             user.setAlias(me.alias);
             user.setAvatar(me.raw.profile_image_url);
 
-            getLocation(function(position) {
+            getLocation(function (position) {
                 user.setLocation({
                     latitude: position.coords.latitude || "",
                     longitude: position.coords.longitude || ""
@@ -209,12 +209,12 @@ $(document).ready(function() {
                 var lat = coords.latitude;
                 var lng = coords.longitude;
 
-                marker = new CustomMarker(new google.maps.LatLng(lat, lng), map, { marker_id: '1234' });
+                marker = new CustomMarker(new google.maps.LatLng(lat, lng), map, {marker_id: '1234'});
                 markers.addMarker(marker);
             });
 
             console.log(user);
-        }).fail(function(err) {
+        }).fail(function (err) {
 
         });
     }
@@ -228,11 +228,32 @@ $(document).ready(function() {
         }
     }
 
+    // Sockets
+    var socket = io();
+    var messageList = [];
+    var counter = 0;
+
+    socket.on('writtenMessage', function (writtenMessage) {
+        var $chatRoom = $("#chat-room");
+
+        if (counter >= 6) {
+            console.log("longer than 6");
+            $chatRoom.children().last().remove();
+            counter--;
+        }
+
+        counter++;
+        $chatRoom.append("<p>" + writtenMessage + "</p>");
+
+    });
+
     // Events
-    $("#chat-input").keypress(function(e) {
-        if (e.which == 13) {
-            console.log( $(this).val() );
+    $("#chat-input").keypress(function (e) {
+        var message = $(this).val();
+
+        if (e.which == 13 && message) {
             $(this).val("");
+            socket.emit('newMessage', message);
         }
     });
 
