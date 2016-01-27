@@ -230,21 +230,17 @@ $(document).ready(function () {
 
     // Sockets
     var socket = io();
-    var messageList = [];
     var counter = 0;
 
     socket.on('writtenMessage', function (writtenMessage) {
         var $chatRoom = $("#chat-room");
 
-        if (counter >= 6) {
-            console.log("longer than 6");
-            $chatRoom.children().last().remove();
-            counter--;
+        if (counter > 13) {
+            $chatRoom.children().first().remove();
         }
 
-        counter++;
         $chatRoom.append("<p>" + writtenMessage + "</p>");
-
+        counter = $chatRoom.children().length;
     });
 
     // Events
