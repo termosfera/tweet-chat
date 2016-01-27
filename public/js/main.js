@@ -1,3 +1,4 @@
+"use strict";
 
 var app = {};
 app.model = {};
@@ -30,8 +31,16 @@ app.model.User = (function() {
         this.alias = alias;
     };
 
+    User.prototype.getAlias = function() {
+        return this.alias;
+    };
+
     User.prototype.setAvatar = function(avatarUrl) {
         this.avatar = avatarUrl;
+    };
+
+    User.prototype.getAvatar = function() {
+        return this.avatar;
     };
 
     return User;
@@ -119,181 +128,183 @@ app.model.CustomMarker = (function() {
 
 $(document).ready(function() {
 
+    // Map
+    var myLatlng = new google.maps.LatLng(-31.9546781,115.852662);
+    var mapOptions = {
+        zoom: 4,
+        center: myLatlng,
+        disableDefaultUI: true
+    };
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    map.set('styles', [
+        {
+            "featureType": "all",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                }
+            ]
+        },
+        {
+            "featureType": "all",
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "color": "#3e606f"
+                },
+                {
+                    "weight": 2
+                },
+                {
+                    "gamma": 0.84
+                }
+            ]
+        },
+        {
+            "featureType": "all",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "weight": 0.6
+                },
+                {
+                    "color": "#82c3e0"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#bee3f3"
+                },
+                {
+                    "visibility": "on"
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "labels.text",
+            "stylers": [
+                {
+                    "visibility": "simplified"
+                }
+            ]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#2c5a71"
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#406d80"
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#2c5a71"
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#29768a"
+                },
+                {
+                    "lightness": -37
+                }
+            ]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#406d80"
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#8eb4c8"
+                }
+            ]
+        }
+    ]);
+    var marker;
+
     var user = new app.model.User();
+    if (!user.getLogged()) {
+        user.setAlias("Anonymous");
+        user.setLocation({});
+    }
 
     // Login modal
     var $modal = $('#loginModal');
-    var $twitterButton = $("#twitter-login-button");
+    var $twitterButton = $("#twitterLoginButton");
 
     $modal.modal('show');
-    $modal.on('hidden.bs.modal', function () {
-        if (!user.getLogged()) {
-            user.setAlias("Anonymous");
-            user.setLocation({});
-        }
-    });
 
     $twitterButton.on('click', function() {
         $modal.modal('hide');
-        console.log("login on button");
-
-        OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
-        OAuth.popup('twitter', {cache: true}).done(function(twitter) {
-            console.log(twitter);
-        }).fail(function(err) {
-            console.log("error" + err);
-        })
-
+        oAuth();
     });
 
-    // Map
-    function initialize() {
+    // OAuth.io
+    function oAuth() {
+        OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
 
-        var myLatlng = new google.maps.LatLng(-31.9546781,115.852662);
-        var mapOptions = {
-            zoom: 4,
-            center: myLatlng,
-            disableDefaultUI: true
-        };
+        OAuth.popup('twitter', {cache: true}).done(function(twitter) {
+            // handle correct popup execution
+        }).fail(function(err) {
+            // handle popup error
+        });
 
-        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        var twitter = OAuth.create('twitter');
 
-        map.set('styles', [
-            {
-                "featureType": "all",
-                "elementType": "labels.text.fill",
-                "stylers": [
-                    {
-                        "color": "#ffffff"
-                    }
-                ]
-            },
-            {
-                "featureType": "all",
-                "elementType": "labels.text.stroke",
-                "stylers": [
-                    {
-                        "visibility": "on"
-                    },
-                    {
-                        "color": "#3e606f"
-                    },
-                    {
-                        "weight": 2
-                    },
-                    {
-                        "gamma": 0.84
-                    }
-                ]
-            },
-            {
-                "featureType": "all",
-                "elementType": "labels.icon",
-                "stylers": [
-                    {
-                        "visibility": "off"
-                    }
-                ]
-            },
-            {
-                "featureType": "administrative",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "weight": 0.6
-                    },
-                    {
-                        "color": "#82c3e0"
-                    }
-                ]
-            },
-            {
-                "featureType": "administrative",
-                "elementType": "geometry.fill",
-                "stylers": [
-                    {
-                        "color": "#bee3f3"
-                    },
-                    {
-                        "visibility": "on"
-                    }
-                ]
-            },
-            {
-                "featureType": "administrative",
-                "elementType": "labels.text",
-                "stylers": [
-                    {
-                        "visibility": "simplified"
-                    }
-                ]
-            },
-            {
-                "featureType": "landscape",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "color": "#2c5a71"
-                    }
-                ]
-            },
-            {
-                "featureType": "poi",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "color": "#406d80"
-                    }
-                ]
-            },
-            {
-                "featureType": "poi.park",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "color": "#2c5a71"
-                    }
-                ]
-            },
-            {
-                "featureType": "road",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "color": "#29768a"
-                    },
-                    {
-                        "lightness": -37
-                    }
-                ]
-            },
-            {
-                "featureType": "transit",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "color": "#406d80"
-                    }
-                ]
-            },
-            {
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [
-                    {
-                        "color": "#8eb4c8"
-                    }
-                ]
-            }
-        ]);
+        twitter.me().done(function(me) {
+            user.setAlias(me.alias);
+            user.setAvatar(me.raw.profile_image_url);
 
-        return [
-            new app.model.CustomMarker(myLatlng, map, {marker_id: '123'}),
-            new app.model.CustomMarker(new google.maps.LatLng(-17.9546781,120.852662), map, {marker_id: '1234'})
-        ];
+            marker = new app.model.CustomMarker(new google.maps.LatLng(-17.9546781,120.852662), map, {marker_id: '1234'});
 
+            console.log(user);
+        }).fail(function(err) {
+
+        });
     }
-
-    google.maps.event.addDomListener(window, 'load', initialize);
 
 });
