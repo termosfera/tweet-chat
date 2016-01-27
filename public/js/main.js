@@ -129,13 +129,14 @@ app.model.CustomMarker = (function() {
 $(document).ready(function() {
 
     // Map
-    var myLatlng = new google.maps.LatLng(-31.9546781,115.852662);
+    var myLatlng = new google.maps.LatLng(33.1928653,-5.6143691,3);
     var mapOptions = {
-        zoom: 4,
+        zoom: 3,
         center: myLatlng,
         disableDefaultUI: true
     };
     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    google.maps.event.trigger(map, "resize");
     map.set('styles', [
         {
             "featureType": "all",
@@ -297,16 +298,36 @@ $(document).ready(function() {
         var twitter = OAuth.create('twitter');
 
         twitter.me().done(function(me) {
+            var marker;
+
             user.setAlias(me.alias);
             user.setAvatar(me.raw.profile_image_url);
 
-            var marker = new app.model.CustomMarker(new google.maps.LatLng(-17.9546781,120.852662), map, {marker_id: '1234'});
-            markers.addMarker(marker);
+            getLocation(function(position) {
+                console.log(position);
+                var coordinates = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                user.setLocation(coordinates);
+                marker = new app.model.CustomMarker(new google.maps.LatLng(user.getLocation().latitude, user.getLocation().longitude),
+                    map, { marker_id: '1234' });
+                markers.addMarker(marker);
+            });
 
             console.log(user);
         }).fail(function(err) {
 
         });
+    }
+
+    // Location
+    function getLocation(callback) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(callback);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
     }
 
 });
