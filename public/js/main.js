@@ -1,7 +1,7 @@
 "use strict";
 
 $(document).ready(function () {
-    var markers = new CustomMarkerList();
+    var markers = new CustomMarkerObserverList();
     var marker;
     var $modal = $('#loginModal');
     var $twitterButton = $("#twitterLoginButton");
@@ -19,11 +19,14 @@ $(document).ready(function () {
         user.setLocation({});
     }
 
+    Utils.extend(user, new Subject());
+
     Utils.getLocation(function (position) {
         user.setLocation({
             latitude: position.coords.latitude || "",
             longitude: position.coords.longitude || ""
         });
+        user.notify( user );
 
         marker = new CustomMarker(user, map, {marker_id: '1234'});
         markers.addMarker(marker);
@@ -49,7 +52,6 @@ $(document).ready(function () {
     $twitterButton.on('click', function () {
         $modal.modal('hide');
         Utils.oAuth(user);
-        console.log(user);
     });
 
     $chatInput.keypress(function (e) {

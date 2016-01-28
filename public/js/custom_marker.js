@@ -1,7 +1,6 @@
-CustomMarker = (function() {
+CustomMarker = (function () {
 
     function CustomMarker(u, map, args) {
-        console.log(u);
         this.user = u;
         this.latlng = new google.maps.LatLng(this.user.getLocation().latitude, this.user.getLocation().longitude);
         this.args = args;
@@ -10,8 +9,7 @@ CustomMarker = (function() {
 
     CustomMarker.prototype = new google.maps.OverlayView();
 
-    CustomMarker.prototype.draw = function() {
-
+    CustomMarker.prototype.draw = function () {
         var self = this;
 
         var div = this.div;
@@ -35,7 +33,7 @@ CustomMarker = (function() {
                 div.dataset.marker_id = self.args.marker_id;
             }
 
-            google.maps.event.addDomListener(div, "click", function(event) {
+            google.maps.event.addDomListener(div, "click", function (event) {
                 console.log(this.user);
                 google.maps.event.trigger(self, "click");
             });
@@ -52,14 +50,14 @@ CustomMarker = (function() {
         }
     };
 
-    CustomMarker.prototype.remove = function() {
+    CustomMarker.prototype.remove = function () {
         if (this.div) {
             this.div.parentNode.removeChild(this.div);
             this.div = null;
         }
     };
 
-    CustomMarker.prototype.getPosition = function() {
+    CustomMarker.prototype.getPosition = function () {
         return this.latlng;
     };
 

@@ -36,15 +36,28 @@ Utils = (function() {
         twitter.me().done(function (me) {
             self.user.setAlias(me.alias);
             self.user.setAvatar(me.raw.profile_image_url);
-            console.log(self.user);
+            self.user.notify( self.user );
         }).fail(function (err) {
             // Handle login error
         });
     }
 
+    /**
+     * Extend an object with an extension
+     *
+     * @param obj
+     * @param extension
+     */
+    function extend( obj, extension ){
+        for ( var key in extension ){
+            obj[key] = extension[key];
+        }
+    }
+
     return {
         getLocation: getLocation,
-        oAuth: oAuth
+        oAuth: oAuth,
+        extend: extend
     }
 
 })();
