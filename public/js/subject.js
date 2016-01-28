@@ -12,7 +12,6 @@ Subject = (function() {
     };
 
     Subject.prototype.notify = function( context ){
-        console.log(context);
         var observerCount = this.observers.count();
         for(var i=0; i < observerCount; i++){
             this.observers.get(i).update( context );

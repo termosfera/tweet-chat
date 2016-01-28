@@ -37,14 +37,14 @@ $(document).ready(function () {
     var counter = 0;
 
     socket.on('writtenMessage', function (writtenMessage) {
-        var recivedMessage = "<div class='comment'><span class='alias'>" + user.getAlias() + "</span></span><p>" +
+        var receivedMessage = "<div class='comment'><span class='alias'>" + user.getAlias() + "</span></span><p>" +
             writtenMessage + "</p></div>";
 
         if (counter > 13) {
             $chatRoom.children().first().remove();
         }
 
-        $chatRoom.append(recivedMessage);
+        $chatRoom.append(receivedMessage);
         counter = $chatRoom.children().length;
     });
 
