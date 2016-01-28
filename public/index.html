@@ -20,7 +20,9 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
         <!-- Custom Scripts -->
         <script type="text/javascript" src="js/utils.js"></script>
+        <script type="text/javascript" src="js/map.js"></script>
         <script type="text/javascript" src="js/user.js"></script>
+        <script type="text/javascript" src="js/custom_marker_list.js"></script>
         <script type="text/javascript" src="js/custom_marker.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
     </head>
@@ -29,15 +31,21 @@
         <!-- Content -->
         <div class="wrapper">
             <div id="map"></div>
-            <div id="chat">
 
+            <div id="chat">
                 <div id="chat-room">
                 </div>
-
                 <div id="chat-form">
                     <input id="chat-input" type="text" maxlength="100" placeholder="Say something to the world...">
                 </div>
+            </div>
 
+            <div id="user-info">
+                <img src="" alt="">
+                <div>
+                    <h3></h3>
+                    <p></p>
+                </div>
             </div>
         </div>
 

@@ -29,6 +29,14 @@ body {
   color: whitesmoke;
   word-wrap: break-word;
 }
+.wrapper #chat-room .comment span {
+  color: #0b97c4;
+  font-weight: bold;
+}
+.wrapper #chat-room .comment p {
+  display: inline-block;
+  margin-left: 5px;
+}
 .wrapper #chat-form {
   width: 100%;
   padding: 1%;
@@ -44,6 +52,21 @@ body {
 }
 .wrapper #chat-form input:focus {
   outline: none;
+}
+.wrapper #user-info {
+  width: 500px;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: 50px;
+  left: 670px;
+}
+.wrapper #user-info img {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
 }
 /* Modal Style */
 #twitter-login-button {

@@ -1,7 +1,9 @@
 CustomMarker = (function() {
 
-    function CustomMarker(latlng, map, args) {
-        this.latlng = latlng;
+    function CustomMarker(u, map, args) {
+        console.log(u);
+        this.user = u;
+        this.latlng = new google.maps.LatLng(this.user.getLocation().latitude, this.user.getLocation().longitude);
         this.args = args;
         this.setMap(map);
     }
@@ -34,7 +36,7 @@ CustomMarker = (function() {
             }
 
             google.maps.event.addDomListener(div, "click", function(event) {
-                alert('You clicked on a custom marker!');
+                console.log(this.user);
                 google.maps.event.trigger(self, "click");
             });
 

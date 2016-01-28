@@ -1,47 +1,50 @@
-// OAuth
-function oAuth() {
-    OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
+Utils = (function() {
 
-    OAuth.popup('twitter', {cache: true}).done(function(twitter) {
-        // handle correct popup execution
-    }).fail(function(err) {
-        // handle popup error
-    });
+    /**
+     * Get users location
+     *
+     * @param callback
+     */
+    function getLocation(callback) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(callback);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    }
 
-    var twitter = OAuth.create('twitter');
+    /**
+     * Starts OAuth login process
+     *
+     * @param u
+     */
+    function oAuth(u) {
+        var self = this;
 
-    twitter.me().done(function(me) {
-        var marker;
+        self.user = u;
 
-        user.setAlias(me.alias);
-        user.setAvatar(me.raw.profile_image_url);
+        OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
 
-        getLocation(function(position) {
-            user.setLocation({
-                latitude: position.coords.latitude || "",
-                longitude: position.coords.longitude || ""
-            });
-
-            // make new marker
-            var coords = user.getLocation();
-            var lat = coords.latitude;
-            var lng = coords.longitude;
-
-            marker = new CustomMarker(new google.maps.LatLng(lat, lng), map, { marker_id: '1234' });
-            markers.addMarker(marker);
+        OAuth.popup('twitter', {cache: true}).done(function (twitter) {
+            // handle correct popup execution
+        }).fail(function (err) {
+            // handle popup error
         });
 
-        console.log(user);
-    }).fail(function(err) {
+        var twitter = OAuth.create('twitter');
 
-    });
-}
-
-// Location
-function getLocation(callback) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(callback);
-    } else {
-        console.log("Geolocation is not supported by this browser.");
+        twitter.me().done(function (me) {
+            self.user.setAlias(me.alias);
+            self.user.setAvatar(me.raw.profile_image_url);
+            console.log(self.user);
+        }).fail(function (err) {
+            // Handle login error
+        });
     }
-}
+
+    return {
+        getLocation: getLocation,
+        oAuth: oAuth
+    }
+
+})();
