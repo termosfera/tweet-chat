@@ -65,7 +65,7 @@ $(document).ready(function () {
 
     $twitterButton.on('click', function () {
         $modal.modal('hide');
-        Utils.oAuth().done(function(me) {
+        Utils.oAuth().me().done(function(me) {
             window.localUser.setId(me.id);
             window.localUser.setAlias(me.alias);
             window.localUser.setAvatar(me.raw.profile_image_url);

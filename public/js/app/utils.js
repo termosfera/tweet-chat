@@ -28,7 +28,7 @@ window.Utils = (function() {
 
         var twitter = OAuth.create('twitter');
 
-        return twitter.me();
+        return twitter;
 
     }
 
