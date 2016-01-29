@@ -1,8 +1,10 @@
 "use strict";
 
-(function(domain) {
+var map = (function() {
 
-    function initializeMap() {
+    var instance;
+
+    function init() {
         var center = new google.maps.LatLng(30.1928653, -5.6143691, 3);
 
         var mapOptions = {
@@ -149,8 +151,17 @@
                 ]
             }
         ]);
+
+        return Map;
     }
 
-    domain.initializeMap = initializeMap;
+    return {
+        getInstance: function() {
+            if ( !instance ) {
+                instance = init();
+            }
+            return instance;
+        }
+    }
 
-})( window.model || (window.model = {}) );
+})();

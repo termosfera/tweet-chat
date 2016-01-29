@@ -6,8 +6,8 @@
         this.list = [];
     };
 
-    UsersList.prototype.addMarker = function (marker) {
-        this.list.push(marker);
+    UsersList.prototype.addUser = function (user) {
+        this.list.push(user);
     };
 
     UsersList.prototype.count = function () {

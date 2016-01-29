@@ -15,9 +15,12 @@
         this.id = id;
     };
 
-    User.prototype.setMarker = function(coords) {
-        var latLng = new google.maps.LatLng(coords.latitude, coords.longitude);
-        this.marker = new model.CustomMarker(latLng, model.Map, {marker_id: this.id});
+    User.prototype.getId = function() {
+        return this.id;
+    };
+
+    User.prototype.setMarker = function(m) {
+        this.marker = m;
     };
 
     User.prototype.setLocation = function(location) {
@@ -50,6 +53,15 @@
 
     User.prototype.getAvatar = function() {
         return this.avatar;
+    };
+
+    User.prototype.getUserShadow = function() {
+        return {
+            id: this.id,
+            alias: this.alias,
+            avatar: this.avatar,
+            location: this.location
+        };
     };
 
     domain.User = User;

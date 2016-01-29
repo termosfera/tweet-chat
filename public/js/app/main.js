@@ -1,28 +1,43 @@
 "use strict";
 
 $(document).ready(function () {
-    model.initializeMap();
+    var Map = map.getInstance();
 
     var $modal = $('#loginModal');
     $modal.modal('show');
+
+    var users = new model.UsersList();
 
     var $twitterButton = $('#twitterLoginButton');
     var $chatRoom = $('#chat-room');
     var $chatInput = $('#chat-input');
 
     // Sockets
-    var socket = io();
+    var Socket = socket.getInstance();
     var counter = 0;
 
-    socket.on('writtenMessage', function (writtenMessage) {
-        var receivedMessage = "<div class='comment'><span class='alias'>" + user.getAlias() + "</span></span><p>" +
-            writtenMessage + "</p></div>";
+    Socket.on('incomingUser', function(u) {
+        if (u.id != localUser.getId()) {
+            var user = new model.User();
+            user.setId(u.id);
+
+            var point = new google.maps.LatLng(u.location.latitude, u.location.longitude, 3);
+            var marker = new model.CustomMarker(point, Map, {marker_id: u.id});
+
+            user.setMarker(marker);
+            users.addUser(user);
+        }
+    });
+
+    Socket.on('incomingMessage', function (im) {
+        var alias = localUser.getId() == im.user.id ? localUser.getAlias() : im.user.alias;
+        var message = "<div class='comment'><span class='alias'>" + alias + "</span></span><p>" + im.message + "</p></div>";
 
         if (counter > 13) {
             $chatRoom.children().first().remove();
         }
 
-        $chatRoom.append(receivedMessage);
+        $chatRoom.append(message);
         counter = $chatRoom.children().length;
     });
 
@@ -32,12 +47,16 @@ $(document).ready(function () {
         Utils.oAuth();
     });
 
-    $chatInput.keypress(function (e) {
-        var message = $(this).val();
+    $chatInput.on('keypress', function (e) {
+        if (e.which == 13) {
+            var text = $(this).val();
+            var message = {
+                user: localUser.getUserShadow(),
+                message: text
+            };
 
-        if (e.which == 13 && message) {
             $(this).val("");
-            socket.emit('newMessage', message);
+            Socket.emit('newMessage', message);
         }
     });
 

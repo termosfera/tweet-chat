@@ -27,7 +27,6 @@ window.Utils = (function() {
         });
 
         OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
-
         OAuth.popup('twitter', {cache: true}).done(function (twitter) {
             // handle correct popup execution
         }).fail(function (err) {
@@ -37,33 +36,49 @@ window.Utils = (function() {
         var twitter = OAuth.create('twitter');
 
         var user;
+        var Socket = socket.getInstance();
 
         twitter.me().done(function (me) {
             if (me) {
                 user = new model.User();
                 user.setId(me.id);
-                user.setMarker(self.coords);
+
+                var userMap = map.getInstance();
+                var point = new google.maps.LatLng(self.coords.latitude, self.coords.longitude, 3);
+                var marker = new model.CustomMarker(point, userMap, {marker_id: me.id});
+
+                user.setMarker(marker);
+                user.setLocation(self.coords);
                 user.setAlias(me.alias);
                 user.setAvatar(me.raw.profile_image_url);
                 user.setLogged(true);
             } else {
-                generateAnonymousUser(user);
+                user = generateAnonymousUser(user);
             }
-            console.log(user);
+
+            window.localUser = user;
+
+            Socket.emit('newUser', user.getUserShadow());
+
         }).fail(function (err) {
-            generateAnonymousUser(user);
+            console.error(err);
+            var user = generateAnonymousUser(user);
+            window.localUser = user;
+            Socket.emit('newUser', user);
         });
     }
 
     function generateAnonymousUser(user) {
         var randomId = Math.random() * (10000 - 10) + 10;
+
         user = new User();
         user.setId(randomId);
         user.setAlias("anonymous");
+
+        return user;
     }
 
     return {
-        getLocation: getLocation,
         oAuth: oAuth
     }
 
