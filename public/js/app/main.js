@@ -3,10 +3,10 @@
 $(document).ready(function () {
     var Map = map.getInstance();
 
-    var $modal = $('#loginModal');
-    $modal.modal('show');
+    var $modal = $('#loginModal').modal('show');
 
     var users = new model.UsersList();
+    window.localUser = new model.User();
 
     var $twitterButton = $('#twitterLoginButton');
     var $chatRoom = $('#chat-room');
@@ -50,7 +50,29 @@ $(document).ready(function () {
 
     $twitterButton.on('click', function () {
         $modal.modal('hide');
-        Utils.oAuth();
+    });
+
+    $modal.on('hidden.bs.modal', function () {
+        Utils.oAuth().done(function(me) {
+            window.localUser.setId(me.id);
+            window.localUser.setAlias(me.alias);
+            window.localUser.setAvatar(me.raw.profile_image_url);
+            window.localUser.setLogged(true);
+
+            Utils.getLocation().then(function(location) {
+                var point = new google.maps.LatLng(location.coords.latitude, location.coords.longitude, 3);
+                var marker = new model.CustomMarker(point, Map, {marker_id: me.id});
+
+                window.localUser.setMarker(marker);
+                window.localUser.setLocation(location.coords);
+
+            }).catch(function(err) {
+
+            });
+
+        }).fail(function(err) {
+            console.error(err);
+        });
     });
 
     $chatInput.on('keypress', function (e) {
