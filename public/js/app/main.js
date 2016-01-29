@@ -53,7 +53,7 @@ $(document).ready(function () {
                         "</div>");
         $message.addClass(ownerClass);
 
-        if (counter > 13) {
+        if (counter > 12) {
             $chatRoom.children().first().remove();
         }
 
