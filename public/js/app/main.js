@@ -3,11 +3,14 @@
 $(document).ready(function () {
     var Map = map.getInstance();
 
-    var $modal = $('#loginModal').modal('show');
+    var $modal = $('#loginModal');
+    $modal.modal({backdrop: 'static', keyboard: false});
+    $modal.modal('show');
 
     var users = new model.UsersList();
     window.localUser = new model.User();
 
+    var $anonymousLoginButton = $('#anonymousLoginButton');
     var $twitterButton = $('#twitterLoginButton');
     var $chatRoom = $('#chat-room');
     var $chatInput = $('#chat-input');
@@ -30,29 +33,38 @@ $(document).ready(function () {
     });
 
     Socket.on('incomingMessage', function (im) {
-        var alias = window.localUser.getId() == im.user.id ? window.localUser.getAlias() : im.user.alias;
-        var message = "<div class='comment'><span class='alias'>" + alias + "</span></span><p>" + im.message + "</p></div>";
+        var isOwner = false;
+
+        if (window.localUser.getId() == im.user.id) {
+            isOwner = true;
+        }
+
+        var alias = isOwner ? window.localUser.getAlias() : im.user.alias;
+        var ownerClass = isOwner ? 'owner' : '';
+        var $message = $("<div class='comment'>" +
+                            "<span class='alias'>" + alias + "</span>" +
+                                "<p>" + im.message + "</p>" +
+                            "</span>" +
+                        "</div>");
+        $message.addClass(ownerClass);
 
         if (counter > 13) {
             $chatRoom.children().first().remove();
         }
 
-        $chatRoom.append(message);
+        $chatRoom.append($message);
         counter = $chatRoom.children().length;
     });
 
     // Events
-    $modal.on('hidden', function () {
-        //var user = Utils.generateAnonymousUser();
-        //window.localUser = user;
-        //Socket.emit('newUser', user);
+    $anonymousLoginButton.on('click', function() {
+        $modal.modal('hide');
+        window.localUser = Utils.generateAnonymousUser();
+        Socket.emit("newUser", window.localUser.toJSON());
     });
 
     $twitterButton.on('click', function () {
         $modal.modal('hide');
-    });
-
-    $modal.on('hidden.bs.modal', function () {
         Utils.oAuth().done(function(me) {
             window.localUser.setId(me.id);
             window.localUser.setAlias(me.alias);
@@ -60,14 +72,18 @@ $(document).ready(function () {
             window.localUser.setLogged(true);
 
             Utils.getLocation().then(function(location) {
-                var point = new google.maps.LatLng(location.coords.latitude, location.coords.longitude, 3);
-                var marker = new model.CustomMarker(point, Map, {marker_id: me.id});
+                if (location) {
+                    var point = new google.maps.LatLng(location.coords.latitude, location.coords.longitude, 3);
+                    var marker = new model.CustomMarker(point, Map, {marker_id: me.id});
 
-                window.localUser.setMarker(marker);
-                window.localUser.setLocation(location.coords);
+                    window.localUser.setMarker(marker);
+                    window.localUser.setLocation(location.coords);
+                }
+
+                Socket.emit("newUser", window.localUser.toJSON());
 
             }).catch(function(err) {
-
+                console.error(err);
             });
 
         }).fail(function(err) {

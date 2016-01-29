@@ -26,14 +26,16 @@ window.Utils = (function() {
 
         });
 
-        return OAuth.create('twitter').me();
+        var twitter = OAuth.create('twitter');
+
+        return twitter.me();
 
     }
 
     function generateAnonymousUser() {
         var randomId = Math.random() * (10000 - 10) + 10;
 
-        var user = new User();
+        var user = new model.User();
         user.setId(randomId);
         user.setAlias("anonymous");
 
