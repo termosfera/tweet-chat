@@ -27,6 +27,7 @@ body {
   padding: 3%;
   background-color: rgba(0, 0, 0, 0.5);
   color: whitesmoke;
+  font-size: 16px;
   word-wrap: break-word;
 }
 .wrapper #chat-room .comment span {
@@ -36,6 +37,9 @@ body {
 .wrapper #chat-room .comment p {
   display: inline-block;
   margin-left: 5px;
+}
+.wrapper #chat-room .owner span {
+  color: #5AFFD3;
 }
 .wrapper #chat-form {
   width: 100%;

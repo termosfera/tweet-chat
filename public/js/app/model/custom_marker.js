@@ -35,7 +35,7 @@
             }
 
             google.maps.event.addDomListener(div, "click", function (event) {
-                console.log(this.user);
+                console.log(self.args.marker_id);
                 google.maps.event.trigger(self, "click");
             });
 

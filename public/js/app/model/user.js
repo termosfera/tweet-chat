@@ -23,8 +23,11 @@
         this.marker = m;
     };
 
-    User.prototype.setLocation = function(location) {
-        this.location = location;
+    User.prototype.setLocation = function(l) {
+        this.location = {
+            latitude: l.coords.latitude,
+            longitude: l.coords.longitude
+        };
     };
 
     User.prototype.getLocation = function() {

@@ -12,23 +12,7 @@ window.Utils = (function() {
         });
     };
 
-    /**
-     * Starts OAuth login process
-     *
-     * @param u
-     */
-    function oAuth() {
-
-        OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
-        OAuth.popup('twitter', {cache: true}).done(function (twitter) {
-
-        }).fail(function (err) {
-
-        });
-
-        var twitter = OAuth.create('twitter');
-
-        return twitter;
+    function showPanel(id) {
 
     }
 

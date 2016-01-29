@@ -20,6 +20,7 @@ $(document).ready(function () {
     var counter = 0;
 
     Socket.on('incomingUser', function(u) {
+        console.log(u);
         if (u.id != window.localUser.getId()) {
             var user = new model.User();
             user.setId(u.id);
@@ -65,30 +66,35 @@ $(document).ready(function () {
 
     $twitterButton.on('click', function () {
         $modal.modal('hide');
-        Utils.oAuth().me().done(function(me) {
-            window.localUser.setId(me.id);
-            window.localUser.setAlias(me.alias);
-            window.localUser.setAvatar(me.raw.profile_image_url);
-            window.localUser.setLogged(true);
 
-            Utils.getLocation().then(function(location) {
-                if (location) {
+        OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
+        OAuth.popup('twitter', {cache: true}).done(function (twitter) {
+            twitter.me().done(function(me) {
+                window.localUser.setId(me.id);
+                window.localUser.setAlias(me.alias);
+                window.localUser.setAvatar(me.raw.profile_image_url);
+                window.localUser.setLogged(true);
+
+                Utils.getLocation().then(function(location) {
                     var point = new google.maps.LatLng(location.coords.latitude, location.coords.longitude, 3);
                     var marker = new model.CustomMarker(point, Map, {marker_id: me.id});
 
                     window.localUser.setMarker(marker);
-                    window.localUser.setLocation(location.coords);
-                }
+                    window.localUser.setLocation(location);
 
-                Socket.emit("newUser", window.localUser.toJSON());
+                    Socket.emit("newUser", window.localUser.toJSON());
 
-            }).catch(function(err) {
+                }).catch(function(err) {
+                    console.error(err);
+                });
+
+            }).fail(function(err) {
                 console.error(err);
             });
+        }).fail(function (err) {
 
-        }).fail(function(err) {
-            console.error(err);
         });
+
     });
 
     $chatInput.on('keypress', function (e) {
