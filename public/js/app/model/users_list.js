@@ -20,6 +20,14 @@
         }
     };
 
+    UsersList.prototype.getById = function (id) {
+        for (var i = 0; i < this.list.length; i++) {
+            if (this.list[i].getId() == id) {
+                return this.list[i];
+            }
+        }
+    };
+
     UsersList.prototype.indexOf = function (obj, startIndex) {
         var i = startIndex;
 

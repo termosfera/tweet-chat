@@ -6,6 +6,7 @@
         this.id = 0;
         this.isLogged = false;
         this.alias = "";
+        this.description = "";
         this.avatar = "";
         this.location = {};
         this.marker = {};
@@ -50,6 +51,14 @@
         return this.alias;
     };
 
+    User.prototype.setDescription = function(d) {
+        this.description = d;
+    };
+
+    User.prototype.getDescription = function() {
+        return this.description;
+    };
+
     User.prototype.setAvatar = function(avatarUrl) {
         this.avatar = avatarUrl;
     };
@@ -62,6 +71,7 @@
         return {
             id: this.id,
             alias: this.alias,
+            description: this.description,
             avatar: this.avatar,
             location: this.location
         };

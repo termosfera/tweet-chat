@@ -35,7 +35,9 @@
             }
 
             google.maps.event.addDomListener(div, "click", function (event) {
-                console.log(self.args.marker_id);
+                var user = window.users.getById(self.args.marker_id);
+                var Panel = panel.getInstance();
+                Panel.draw(user);
                 google.maps.event.trigger(self, "click");
             });
 

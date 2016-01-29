@@ -1,3 +1,6 @@
+@text-primary-color: #0b97c4;
+@text-secondary-color: #5AFFD3;
+
 html, body {
   height: 100%;
   margin: 0;
@@ -35,7 +38,7 @@ html, body {
     .comment {
 
       span {
-        color: #0b97c4;
+        color: @text-secondary-color;
         font-weight: bold;
       }
 
@@ -47,7 +50,7 @@ html, body {
     }
 
     .owner span {
-      color: #5AFFD3;
+      color: @text-primary-color;
     }
   }
 
@@ -72,19 +75,37 @@ html, body {
   }
 
   #user-info {
-    width: 500px;
-    height: 200px;
-    background-color: rgba(0, 0, 0, 0.5);
+    width: 400px;
+    height: 140px;
+    background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
     bottom: 50px;
     left: 670px;
 
     img {
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       position: absolute;
-      bottom: 5px;
-      left: 5px;
+      top: 15px;
+      left: 15px;
+      border-radius: 50px;
+    }
+
+    h3.user-name {
+      color: #0b97c4;
+      position: absolute;
+      top: 15px;
+      left: 90px;
+      margin: 0;
+      padding: 0;
+    }
+
+    p.user-description {
+      width: 300px;
+      position: absolute;
+      color: whitesmoke;
+      left: 90px;
+      top: 55px;
     }
   }
 

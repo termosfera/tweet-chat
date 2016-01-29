@@ -7,7 +7,7 @@ $(document).ready(function () {
     $modal.modal({backdrop: 'static', keyboard: false});
     $modal.modal('show');
 
-    var users = new model.UsersList();
+    window.users = new model.UsersList();
     window.localUser = new model.User();
 
     var $anonymousLoginButton = $('#anonymousLoginButton');
@@ -29,7 +29,7 @@ $(document).ready(function () {
             var marker = new model.CustomMarker(point, Map, {marker_id: u.id});
 
             user.setMarker(marker);
-            users.addUser(user);
+            window.users.addUser(user);
         }
     });
 
@@ -70,8 +70,10 @@ $(document).ready(function () {
         OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
         OAuth.popup('twitter', {cache: true}).done(function (twitter) {
             twitter.me().done(function(me) {
+                console.log(me);
                 window.localUser.setId(me.id);
                 window.localUser.setAlias(me.alias);
+                window.localUser.setDescription(me.raw.description);
                 window.localUser.setAvatar(me.raw.profile_image_url);
                 window.localUser.setLogged(true);
 
@@ -81,6 +83,7 @@ $(document).ready(function () {
 
                     window.localUser.setMarker(marker);
                     window.localUser.setLocation(location);
+                    window.users.addUser(window.localUser);
 
                     Socket.emit("newUser", window.localUser.toJSON());
 

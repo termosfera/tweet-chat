@@ -31,7 +31,7 @@ body {
   word-wrap: break-word;
 }
 .wrapper #chat-room .comment span {
-  color: #0b97c4;
+  color: #5AFFD3;
   font-weight: bold;
 }
 .wrapper #chat-room .comment p {
@@ -39,7 +39,7 @@ body {
   margin-left: 5px;
 }
 .wrapper #chat-room .owner span {
-  color: #5AFFD3;
+  color: #0b97c4;
 }
 .wrapper #chat-form {
   width: 100%;
@@ -58,19 +58,35 @@ body {
   outline: none;
 }
 .wrapper #user-info {
-  width: 500px;
-  height: 200px;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 400px;
+  height: 140px;
+  background-color: rgba(0, 0, 0, 0.7);
   position: absolute;
   bottom: 50px;
   left: 670px;
 }
 .wrapper #user-info img {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   position: absolute;
-  bottom: 5px;
-  left: 5px;
+  top: 15px;
+  left: 15px;
+  border-radius: 50px;
+}
+.wrapper #user-info h3.user-name {
+  color: #0b97c4;
+  position: absolute;
+  top: 15px;
+  left: 90px;
+  margin: 0;
+  padding: 0;
+}
+.wrapper #user-info p.user-description {
+  width: 300px;
+  position: absolute;
+  color: whitesmoke;
+  left: 90px;
+  top: 55px;
 }
 /* Modal Style */
 #twitter-login-button {

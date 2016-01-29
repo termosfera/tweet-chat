@@ -12,10 +12,6 @@ window.Utils = (function() {
         });
     };
 
-    function showPanel(id) {
-
-    }
-
     function generateAnonymousUser() {
         var randomId = Math.random() * (10000 - 10) + 10;
 
@@ -27,7 +23,6 @@ window.Utils = (function() {
     }
 
     return {
-        oAuth: oAuth,
         getLocation: getLocation,
         generateAnonymousUser: generateAnonymousUser
     }
