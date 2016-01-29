@@ -1,4 +1,4 @@
-Utils = (function() {
+window.Utils = (function() {
 
     /**
      * Get users location
@@ -18,10 +18,13 @@ Utils = (function() {
      *
      * @param u
      */
-    function oAuth(u) {
+    function oAuth() {
         var self = this;
+        self.coords = {};
 
-        self.user = u;
+        getLocation(function (position) {
+            self.coords = position.coords || {};
+        });
 
         OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
 
@@ -33,31 +36,35 @@ Utils = (function() {
 
         var twitter = OAuth.create('twitter');
 
+        var user;
+
         twitter.me().done(function (me) {
-            self.user.setAlias(me.alias);
-            self.user.setAvatar(me.raw.profile_image_url);
-            self.user.notify( self.user );
+            if (me) {
+                user = new model.User();
+                user.setId(me.id);
+                user.setMarker(self.coords);
+                user.setAlias(me.alias);
+                user.setAvatar(me.raw.profile_image_url);
+                user.setLogged(true);
+            } else {
+                generateAnonymousUser(user);
+            }
+            console.log(user);
         }).fail(function (err) {
-            // Handle login error
+            generateAnonymousUser(user);
         });
     }
 
-    /**
-     * Extend an object with an extension
-     *
-     * @param obj
-     * @param extension
-     */
-    function extend( obj, extension ){
-        for ( var key in extension ){
-            obj[key] = extension[key];
-        }
+    function generateAnonymousUser(user) {
+        var randomId = Math.random() * (10000 - 10) + 10;
+        user = new User();
+        user.setId(randomId);
+        user.setAlias("anonymous");
     }
 
     return {
         getLocation: getLocation,
-        oAuth: oAuth,
-        extend: extend
+        oAuth: oAuth
     }
 
 })();

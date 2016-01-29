@@ -1,36 +1,14 @@
 "use strict";
 
 $(document).ready(function () {
-    var markers = new CustomMarkerObserverList();
-    var marker;
+    model.initializeMap();
+
     var $modal = $('#loginModal');
-    var $twitterButton = $("#twitterLoginButton");
-    var $chatRoom = $("#chat-room");
-    var $chatInput = $("#chat-input");
-
-    var map = initializeMap();
-
     $modal.modal('show');
 
-    // User
-    var user = new User();
-    if (!user.getLogged()) {
-        user.setAlias("Anonymous");
-        user.setLocation({});
-    }
-
-    Utils.extend(user, new Subject());
-
-    Utils.getLocation(function (position) {
-        user.setLocation({
-            latitude: position.coords.latitude || "",
-            longitude: position.coords.longitude || ""
-        });
-        user.notify( user );
-
-        marker = new CustomMarker(user, map, {marker_id: '1234'});
-        markers.addMarker(marker);
-    });
+    var $twitterButton = $('#twitterLoginButton');
+    var $chatRoom = $('#chat-room');
+    var $chatInput = $('#chat-input');
 
     // Sockets
     var socket = io();
@@ -51,7 +29,7 @@ $(document).ready(function () {
     // Events
     $twitterButton.on('click', function () {
         $modal.modal('hide');
-        Utils.oAuth(user);
+        Utils.oAuth();
     });
 
     $chatInput.keypress(function (e) {

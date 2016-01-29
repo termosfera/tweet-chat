@@ -1,8 +1,9 @@
-CustomMarker = (function () {
+"use strict";
 
-    function CustomMarker(u, map, args) {
-        this.user = u;
-        this.latlng = new google.maps.LatLng(this.user.getLocation().latitude, this.user.getLocation().longitude);
+(function (domain) {
+
+    function CustomMarker(latLng, map, args) {
+        this.latlng = latLng;
         this.args = args;
         this.setMap(map);
     }
@@ -61,6 +62,6 @@ CustomMarker = (function () {
         return this.latlng;
     };
 
-    return CustomMarker;
+    domain.CustomMarker = CustomMarker;
 
-})();
+})( window.model || (window.model = {}) );
