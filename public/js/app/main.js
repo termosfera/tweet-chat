@@ -17,7 +17,7 @@ $(document).ready(function () {
     var counter = 0;
 
     Socket.on('incomingUser', function(u) {
-        if (u.id != localUser.getId()) {
+        if (u.id != window.localUser.getId()) {
             var user = new model.User();
             user.setId(u.id);
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
     });
 
     Socket.on('incomingMessage', function (im) {
-        var alias = localUser.getId() == im.user.id ? localUser.getAlias() : im.user.alias;
+        var alias = window.localUser.getId() == im.user.id ? window.localUser.getAlias() : im.user.alias;
         var message = "<div class='comment'><span class='alias'>" + alias + "</span></span><p>" + im.message + "</p></div>";
 
         if (counter > 13) {
@@ -42,6 +42,12 @@ $(document).ready(function () {
     });
 
     // Events
+    $modal.on('hidden', function () {
+        //var user = Utils.generateAnonymousUser();
+        //window.localUser = user;
+        //Socket.emit('newUser', user);
+    });
+
     $twitterButton.on('click', function () {
         $modal.modal('hide');
         Utils.oAuth();
@@ -51,7 +57,7 @@ $(document).ready(function () {
         if (e.which == 13) {
             var text = $(this).val();
             var message = {
-                user: localUser.getUserShadow(),
+                user: window.localUser.toJSON(),
                 message: text
             };
 

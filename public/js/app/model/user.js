@@ -55,7 +55,7 @@
         return this.avatar;
     };
 
-    User.prototype.getUserShadow = function() {
+    User.prototype.toJSON = function() {
         return {
             id: this.id,
             alias: this.alias,

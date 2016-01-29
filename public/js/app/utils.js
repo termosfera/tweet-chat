@@ -1,17 +1,16 @@
 window.Utils = (function() {
 
-    /**
-     * Get users location
-     *
-     * @param callback
-     */
-    function getLocation(callback) {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(callback);
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-        }
-    }
+    var getLocation = function () {
+        return new Promise( function (resolve, reject) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(location) {
+                    resolve(location);
+                });
+            } else {
+                reject("Geolocation is not supported by this browser.");
+            }
+        });
+    };
 
     /**
      * Starts OAuth login process
@@ -21,10 +20,6 @@ window.Utils = (function() {
     function oAuth() {
         var self = this;
         self.coords = {};
-
-        getLocation(function (position) {
-            self.coords = position.coords || {};
-        });
 
         OAuth.initialize('DGPBxDEJ59WaLZaRK1zn82gEU7Q');
         OAuth.popup('twitter', {cache: true}).done(function (twitter) {
@@ -38,40 +33,48 @@ window.Utils = (function() {
         var user;
         var Socket = socket.getInstance();
 
-        twitter.me().done(function (me) {
-            if (me) {
-                user = new model.User();
-                user.setId(me.id);
+        getLocation().then(function(position) {
+            self.coords = position.coords || {};
 
-                var userMap = map.getInstance();
-                var point = new google.maps.LatLng(self.coords.latitude, self.coords.longitude, 3);
-                var marker = new model.CustomMarker(point, userMap, {marker_id: me.id});
+            twitter.me().done(function (me) {
+                if (me) {
+                    user = new model.User();
+                    user.setId(me.id);
 
-                user.setMarker(marker);
-                user.setLocation(self.coords);
-                user.setAlias(me.alias);
-                user.setAvatar(me.raw.profile_image_url);
-                user.setLogged(true);
-            } else {
-                user = generateAnonymousUser(user);
-            }
+                    var userMap = map.getInstance();
+                    var point = new google.maps.LatLng(self.coords.latitude, self.coords.longitude, 3);
+                    var marker = new model.CustomMarker(point, userMap, {marker_id: me.id});
 
-            window.localUser = user;
+                    user.setMarker(marker);
+                    user.setLocation(self.coords);
+                    user.setAlias(me.alias);
+                    user.setAvatar(me.raw.profile_image_url);
+                    user.setLogged(true);
+                } else {
+                    user = generateAnonymousUser();
+                }
 
-            Socket.emit('newUser', user.getUserShadow());
+                window.localUser = user;
 
-        }).fail(function (err) {
+                Socket.emit('newUser', user.toJSON());
+
+            }).fail(function (err) {
+                console.error(err);
+                var user = generateAnonymousUser();
+                window.localUser = user;
+                Socket.emit('newUser', user);
+            });
+
+        }).catch(function(err) {
             console.error(err);
-            var user = generateAnonymousUser(user);
-            window.localUser = user;
-            Socket.emit('newUser', user);
         });
+
     }
 
-    function generateAnonymousUser(user) {
+    function generateAnonymousUser() {
         var randomId = Math.random() * (10000 - 10) + 10;
 
-        user = new User();
+        var user = new User();
         user.setId(randomId);
         user.setAlias("anonymous");
 
@@ -79,7 +82,8 @@ window.Utils = (function() {
     }
 
     return {
-        oAuth: oAuth
+        oAuth: oAuth,
+        generateAnonymousUser: generateAnonymousUser
     }
 
 })();
