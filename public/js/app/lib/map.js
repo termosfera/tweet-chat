@@ -8,11 +8,11 @@ var map = (function() {
         var center = new google.maps.LatLng(30.1928653, -5.6143691, 3);
 
         var mapOptions = {
-            scrollwheel: false,
+            scrollwheel: true,
             navigationControl: false,
             mapTypeControl: false,
             scaleControl: false,
-            draggable: false,
+            draggable: true,
             zoom: 3,
             center: center,
             disableDefaultUI: true
