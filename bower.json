@@ -16,6 +16,8 @@
     "tests"
   ],
   "dependencies": {
-    "oauth-js": "oauth.io#^0.5.0"
+    "oauth-js": "oauth.io#^0.5.0",
+    "jquery": "^2.2.0",
+    "bootstrap": "^3.3.6"
   }
 }
