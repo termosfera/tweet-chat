@@ -1,6 +1,6 @@
 window.Utils = (function() {
 
-    var getLocation = function () {
+    function getLocation() {
         return new Promise( function (resolve, reject) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(location) {
