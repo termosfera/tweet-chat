@@ -97,8 +97,9 @@ $(document).ready(function () {
             }).fail(function(err) {
                 console.error(err);
             });
-        }).fail(function (err) {
-
+        }).fail(function () {
+            window.localUser = Utils.generateAnonymousUser();
+            Socket.emit("newUser", window.localUser.toJSON());
         });
 
     });
