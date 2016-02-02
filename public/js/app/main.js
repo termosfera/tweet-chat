@@ -46,18 +46,20 @@ $(document).ready(function () {
 
         var alias = isOwner ? window.localUser.getAlias() : im.user.alias;
         var ownerClass = isOwner ? 'owner' : '';
-        var $message = $("<div class='comment'>" +
-                            "<span class='alias'>" + alias + "</span>" +
-                                "<p>" + im.message + "</p>" +
-                            "</span>" +
-                        "</div>");
-        $message.addClass(ownerClass);
+        var $commentUser = $("<span class='alias'></span>").text(alias);
+        var $commentText = $("<p></p>").text(im.message);
+
+        var $comment = $("<div class='comment'></div>");
+        $comment.append($commentUser);
+        $comment.append($commentText);
+
+        $comment.addClass(ownerClass);
 
         if (counter > 12) {
             $chatRoom.children().first().remove();
         }
 
-        $chatRoom.append($message);
+        $chatRoom.append($comment);
         counter = $chatRoom.children().length;
     });
 
