@@ -55,7 +55,7 @@ $(document).ready(function () {
 
         $comment.addClass(ownerClass);
 
-        if (counter > 11) {
+        if (counter > 12) {
             $chatRoom.children().first().remove();
         }
 
